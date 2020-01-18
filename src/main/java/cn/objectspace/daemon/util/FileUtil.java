@@ -2,7 +2,11 @@ package cn.objectspace.daemon.util;
 
 import java.io.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class FileUtil {
+	private static Logger logger = LoggerFactory.getLogger(FileUtil.class);
     private static BufferedOutputStream bos = null;
     private static BufferedInputStream bis = null;
     public static boolean copyFile(InputStream inStream, String destFilePath){
@@ -17,7 +21,8 @@ public class FileUtil {
                 bos.flush();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("复制dll库异常");
+            logger.error("异常信息:{}",e.getMessage());
             return false;
         }finally {
             try {
