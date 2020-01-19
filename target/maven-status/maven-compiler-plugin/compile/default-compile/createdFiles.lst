@@ -5,8 +5,12 @@ cn\objectspace\daemon\pojo\singletonbean\GsonSingleton.class
 cn\objectspace\daemon\util\ServerUtil.class
 cn\objectspace\daemon\pojo\dto\ReqDto.class
 cn\objectspace\daemon\DaemonCore$1.class
+cn\objectspace\daemon\pojo\dto\CpuDto.class
+cn\objectspace\daemon\pojo\dto\DiskDto.class
 cn\objectspace\daemon\DaemonCore.class
+cn\objectspace\daemon\pojo\dto\NetDto.class
 cn\objectspace\daemon\cache\DaemonCache.class
 cn\objectspace\daemon\pool\CommandPool.class
 cn\objectspace\daemon\util\FileUtil.class
 cn\objectspace\daemon\pojo\dto\ResDto.class
+cn\objectspace\daemon\pojo\dto\ServerInfoDto.class

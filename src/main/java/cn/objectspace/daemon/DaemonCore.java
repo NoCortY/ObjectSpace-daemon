@@ -1,66 +1,79 @@
 package cn.objectspace.daemon;
 
-import com.google.gson.Gson;
-
-import cn.objectspace.daemon.command.Command;
 import cn.objectspace.daemon.pojo.dto.ReqDto;
 import cn.objectspace.daemon.pojo.dto.ResDto;
 import cn.objectspace.daemon.pojo.singletonbean.GsonSingleton;
-import cn.objectspace.daemon.pool.CommandPool;
+import cn.objectspace.daemon.util.ServerUtil;
+import com.google.gson.Gson;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;
+import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
+import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
+import io.vertx.ext.web.handler.BodyHandler;
 
-//ÊØ»¤½ø³Ì½ÓÊÕÆ÷
+//å®ˆæŠ¤è¿›ç¨‹æ¥æ”¶å™¨
 public class DaemonCore extends AbstractVerticle {
-	public static void main(String[] args) {
-		// ´´½¨·şÎñ
-		DaemonCore verticle = new DaemonCore();
-		Vertx vertx = Vertx.vertx();
-		// ²¿Êğ·şÎñ£¬»áÖ´ĞĞMyHttpServerµÄstart·½·¨
-		vertx.deployVerticle(verticle);
-	}
+    public static void main(String[] args) {
+        // åˆ›å»ºæœåŠ¡
+        DaemonCore verticle = new DaemonCore();
+        Vertx vertx = Vertx.vertx();
+        // éƒ¨ç½²æœåŠ¡ï¼Œä¼šæ‰§è¡ŒMyHttpServerçš„startæ–¹æ³•
+        vertx.deployVerticle(verticle);
+    }
 
-	@Override
-	public void start() throws Exception {
+    @Override
+    public void start() throws Exception {
 
-		HttpServer server = vertx.createHttpServer();
-		Router router = Router.router(vertx);
-		
-		/*
-		 * // ´¦ÀígetÇëÇó router.get("/get").handler(new Handler<RoutingContext>() {
-		 * 
-		 * @Override public void handle(RoutingContext request) { // TODO Auto-generated
-		 * method stub String username = request.request().getParam("username"); String
-		 * password = request.request().getParam("password");
-		 * System.out.println(username + " " + password);
-		 * request.response().end("get request success"); }; });
-		 */
-		// ´¦ÀípostÇëÇó
-		router.post("/post").handler(new Handler<RoutingContext>() {
-			@Override
-			public void handle(RoutingContext request) {
-				// TODO Auto-generated method stub
-				Gson gson = GsonSingleton.getSingleton();
-				ResDto resDto = null;
-				String reqJson = request.getBody().toJsonObject().toString();
-				ReqDto reqDto = gson.fromJson(reqJson, ReqDto.class);
-				String command = reqDto.getReqCode();
-				boolean successFlag = false;
-				if(CommandPool.CLOSE_MICROSERVICE.contentEquals(command)) {
-					successFlag = Command.closeService(reqDto.getReqData());
-				}
-				if(successFlag) {
-					resDto = new ResDto("1001","ÇëÇó³É¹¦","have not data");
-				}
-				request.response().end(gson.toJson(resDto));
-			}
-		});
+        HttpServer server = vertx.createHttpServer();
+        Router router = Router.router(vertx);
+        //è·å–Postè¯·æ±‚ä½“ä¸­çš„å‚æ•°å¿…é¡»è¦å†™è¿™ä¸€å¥å¦åˆ™ç©ºæŒ‡é’ˆ
+        router.route().handler(BodyHandler.create());
 
-		server.requestHandler(router::accept);
-		server.listen(80);
-	}
+        /*
+         * // å¤„ç†getè¯·æ±‚ router.get("/get").handler(new Handler<RoutingContext>() {
+         *
+         * @Override public void handle(RoutingContext request) { // TODO Auto-generated
+         * method stub String username = request.request().getParam("username"); String
+         * password = request.request().getParam("password");
+         * System.out.println(username + " " + password);
+         * request.response().end("get request success"); }; });
+         */
+        // å¤„ç†postè¯·æ±‚
+        router.post("/post").handler(new Handler<RoutingContext>() {
+            @Override
+            public void handle(RoutingContext request) {
+                // TODO Auto-generated method stub
+                Gson gson = GsonSingleton.getSingleton();
+                ResDto resDto = null;
+                System.out.println(request);
+                ReqDto reqDto = gson.fromJson(request.getBodyAsJson().toString(), ReqDto.class);
+                String command = reqDto.getReqCode();
+                switch (command){
+                    case "serverInfo": {
+                        resDto = new ResDto("1001","è¯·æ±‚æˆåŠŸ",
+                                ServerUtil.serverInfoDtoBuilder());
+                        HttpServerResponse response = request.response();
+                        MultiMap headers = response.headers();
+                        headers.set("content-type", "application/json");
+                        response.end(gson.toJson(resDto));
+                    }
+                }
+               /* boolean successFlag = false;
+                if(CommandPool.CLOSE_MICROSERVICE.contentEquals(command)) {
+                    successFlag = Command.closeService(reqDto.getReqData());
+                }
+                if(successFlag) {
+                    resDto = new ResDto("1001","è¯·æ±‚æˆåŠŸ","have not data");
+                }*/
+                //request.response().end(gson.toJson(resDto));
+            }
+        });
+
+        server.requestHandler(router::accept);
+        server.listen(7070);
+    }
 }

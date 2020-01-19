@@ -1,72 +1,70 @@
 package cn.objectspace.daemon.command;
 
+import cn.objectspace.daemon.cache.DaemonCache;
+import cn.objectspace.daemon.util.JavaShellUtil;
 
-import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import cn.objectspace.daemon.cache.DaemonCache;
-import cn.objectspace.daemon.util.JavaShellUtil;
-
 public class Command {
-	/**
-	 * ¸ù¾İ½ø³ÌÃû£¬¹Ø±ÕÄ³¸öÎ¢·şÎñ
-	 * @return
-	 */
-	public static synchronized boolean closeService(String processName) {
-		if(JavaShellUtil.executeShell("ps -ef | grep "+processName+" | grep -v grep | awk '{print $2}' | xargs kill -9")) {
-			//Èç¹ûÄ³¸öÎ¢·şÎñ¹Ø±Õ³É¹¦£¬ÄÇÃ´½«»º´æÖĞµÄÒ²Çå³ı
-			DaemonCache.getMicroServiceCache().remove(processName);
-			return true;
-		}else {
-			//Èç¹û¹Ø±ÕÊ§°Ü£¬ÔòÖ±½Ó·µ»Øfalse
-			return false;
-		}
-	}
-	
-	/**
-	 * Æô¶¯Ä³¸öÎ¢·şÎñ
-	 * @param jarName
-	 * @param path
-	 * @return
-	 */
-	public static synchronized boolean openServiceFirst(String jarName,String path) {
-		boolean successFlag = JavaShellUtil.executeShell("nohup java -jar "+path+jarName+" > ./sys-log.log &  ");
-		String pid = JavaShellUtil.executeShellAndReturnShell("ps -ef|grep \"+processName+\"|grep -v grep|awk '{print $2}'");
-		if(successFlag) {
-			//Èç¹ûÆô¶¯³É¹¦£¬½«Î¢·şÎñjarÃûºÍ½ø³ÌºÅ·ÅÈë»º´æÖĞ
-			DaemonCache.getMicroServiceCache().put(jarName, pid);
-		}
-		return successFlag;
-	}
-	
-	/**
-	 * ²é¿´ÄÄ¸öÎ¢·şÎñÒÑ¾­å´»ú
-	 * @param processMap
-	 * @return
-	 */
-	public static synchronized List<String> microServiceIsDown(Map<String,Object> processMap) {
-		List<String> downList = new LinkedList<String>();
-		//processNameÊÇÎ¢·şÎñµÄ½ø³ÌÃû£¬Ó¦¸ÃÊÇÎ¢·şÎñÊµÀıÃû
-		for(String processName :processMap.keySet()) {
-			String pid = JavaShellUtil.executeShellAndReturnShell("ps -ef|grep "+processName+"|grep -v grep|awk '{print $2}'");
-			if(!processMap.get(processName).equals(pid)) {
-				//È¡³öµÄ½ø³ÌºÅ²»µÈÓÚ¸Ã½ø³Ì£¬ÔòËµÃ÷¸Ã½ø³ÌÒÑ¾­·ÇÕı³£¹Ø±Õ
-				//½«Ëü¼ÓÈëÒÑå´»úÁĞ±í
-				downList.add(processName);
-				//²¢ÇÒÒÆ³ı³öÒÑÆô¶¯Î¢·şÎñµÄ»º´æÖĞ
-				processMap.remove(processName);
-			}
-		}
-		return downList;
-	}
-	
-	/**
-	 * ÖØÆô·şÎñÆ÷
-	 * @return
-	 */
-	public static synchronized boolean reboot() {
-		return JavaShellUtil.executeShell("reboot");
-	}
+    /**
+     * æ ¹æ®è¿›ç¨‹åï¼Œå…³é—­æŸä¸ªå¾®æœåŠ¡
+     * @return
+     */
+    public static synchronized boolean closeService(String processName) {
+        if(JavaShellUtil.executeShell("ps -ef | grep "+processName+" | grep -v grep | awk '{print $2}' | xargs kill -9")) {
+            //å¦‚æœæŸä¸ªå¾®æœåŠ¡å…³é—­æˆåŠŸï¼Œé‚£ä¹ˆå°†ç¼“å­˜ä¸­çš„ä¹Ÿæ¸…é™¤
+            DaemonCache.getMicroServiceCache().remove(processName);
+            return true;
+        }else {
+            //å¦‚æœå…³é—­å¤±è´¥ï¼Œåˆ™ç›´æ¥è¿”å›false
+            return false;
+        }
+    }
+
+    /**
+     * å¯åŠ¨æŸä¸ªå¾®æœåŠ¡
+     * @param jarName
+     * @param path
+     * @return
+     */
+    public static synchronized boolean openServiceFirst(String jarName,String path) {
+        boolean successFlag = JavaShellUtil.executeShell("nohup java -jar "+path+jarName+" > ./sys-log.log &  ");
+        String pid = JavaShellUtil.executeShellAndReturnShell("ps -ef|grep \"+processName+\"|grep -v grep|awk '{print $2}'");
+        if(successFlag) {
+            //å¦‚æœå¯åŠ¨æˆåŠŸï¼Œå°†å¾®æœåŠ¡jaråå’Œè¿›ç¨‹å·æ”¾å…¥ç¼“å­˜ä¸­
+            DaemonCache.getMicroServiceCache().put(jarName, pid);
+        }
+        return successFlag;
+    }
+
+    /**
+     * æŸ¥çœ‹å“ªä¸ªå¾®æœåŠ¡å·²ç»å®•æœº
+     * @param processMap
+     * @return
+     */
+    public static synchronized List<String> microServiceIsDown(Map<String,Object> processMap) {
+        List<String> downList = new LinkedList<String>();
+        //processNameæ˜¯å¾®æœåŠ¡çš„è¿›ç¨‹åï¼Œåº”è¯¥æ˜¯å¾®æœåŠ¡å®ä¾‹å
+        for(String processName :processMap.keySet()) {
+            String pid = JavaShellUtil.executeShellAndReturnShell("ps -ef|grep "+processName+"|grep -v grep|awk '{print $2}'");
+            if(!processMap.get(processName).equals(pid)) {
+                //å–å‡ºçš„è¿›ç¨‹å·ä¸ç­‰äºè¯¥è¿›ç¨‹ï¼Œåˆ™è¯´æ˜è¯¥è¿›ç¨‹å·²ç»éæ­£å¸¸å…³é—­
+                //å°†å®ƒåŠ å…¥å·²å®•æœºåˆ—è¡¨
+                downList.add(processName);
+                //å¹¶ä¸”ç§»é™¤å‡ºå·²å¯åŠ¨å¾®æœåŠ¡çš„ç¼“å­˜ä¸­
+                processMap.remove(processName);
+            }
+        }
+        return downList;
+    }
+
+    /**
+     * é‡å¯æœåŠ¡å™¨
+     * @return
+     */
+    public static synchronized boolean reboot() {
+        return JavaShellUtil.executeShell("reboot");
+    }
 }

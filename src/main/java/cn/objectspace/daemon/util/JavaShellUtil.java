@@ -5,116 +5,116 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class JavaShellUtil {
-    
+
     /**
-     * Ö´ĞĞshellÃüÁî²¢·µ»Ø¿ØÖÆÌ¨Êä³öµÄ½á¹û,Ö´ĞĞÊ§°Ü·µ»Ønull
+     * æ‰§è¡Œshellå‘½ä»¤å¹¶è¿”å›æ§åˆ¶å°è¾“å‡ºçš„ç»“æœ,æ‰§è¡Œå¤±è´¥è¿”å›null
      * @param shellCommand
      * @return
      */
     public static String executeShellAndReturnShell(String shellCommand) {
-    	int success = 0;
-        
-    	StringBuffer resStr = new StringBuffer();
-        //ÈÕÖ¾´®
+        int success = 0;
+
+        StringBuffer resStr = new StringBuffer();
+        //æ—¥å¿—ä¸²
         StringBuffer stringBuffer = new StringBuffer();
-        //½ÓÊÜ¿ØÖÆÌ¨Êä³ö
+        //æ¥å—æ§åˆ¶å°è¾“å‡º
         BufferedReader bufferedReader = null;
 
         try {
             Process pid = null;
             String[] cmd = {"/bin/sh", "-c", shellCommand};
-            //Ö´ĞĞShellÃüÁî
+            //æ‰§è¡ŒShellå‘½ä»¤
             pid = Runtime.getRuntime().exec(cmd);
-            stringBuffer.append("Ö´ĞĞÃüÁî:"+shellCommand+"\r\n");
+            stringBuffer.append("æ‰§è¡Œå‘½ä»¤:"+shellCommand+"\r\n");
             if (pid != null) {
-            	stringBuffer.append("½ø³ÌºÅ:"+pid.toString()+"\r\n");
+                stringBuffer.append("è¿›ç¨‹å·:"+pid.toString()+"\r\n");
                 bufferedReader = new BufferedReader(new InputStreamReader(pid.getInputStream()), 1024);
-                //»ñÈ¡Ö´ĞĞ½á¹û
+                //è·å–æ‰§è¡Œç»“æœ
                 success = pid.waitFor();
                 if(success!=0) {
-                	stringBuffer.append("ÃüÁîÖ´ĞĞÊ§°Ü\r\n");
+                    stringBuffer.append("å‘½ä»¤æ‰§è¡Œå¤±è´¥\r\n");
                 }
             } else {
-                stringBuffer.append("Exception:ÃüÁîÎ´Ö´ĞĞ\r\n");
+                stringBuffer.append("Exception:å‘½ä»¤æœªæ‰§è¡Œ\r\n");
                 return null;
             }
-            stringBuffer.append("Ö´ĞĞ½á¹û:\r\n");
+            stringBuffer.append("æ‰§è¡Œç»“æœ:\r\n");
             String line = null;
-            //¶ÁÈ¡ShellµÄÊä³öÄÚÈİ£¬²¢Ìí¼Óµ½stringBufferÖĞ
+            //è¯»å–Shellçš„è¾“å‡ºå†…å®¹ï¼Œå¹¶æ·»åŠ åˆ°stringBufferä¸­
             while (bufferedReader != null && (line = bufferedReader.readLine()) != null) {
-            	resStr.append(line).append("\r\n");
+                resStr.append(line).append("\r\n");
                 stringBuffer.append(line).append("\r\n");
             }
         } catch (Exception ioe) {
-        	stringBuffer.append("ÃüÁîÖ´ĞĞÊ±·¢ÉúÒì³£:");
-        	stringBuffer.append("Òì³£ĞÅÏ¢:"+ioe.getMessage());
-        	return null;
+            stringBuffer.append("å‘½ä»¤æ‰§è¡Œæ—¶å‘ç”Ÿå¼‚å¸¸:");
+            stringBuffer.append("å¼‚å¸¸ä¿¡æ¯:"+ioe.getMessage());
+            return null;
         } finally {
-        	LogUtil.writeLog(stringBuffer.toString());
-        	//¹Ø±ÕÁ÷
-        	if(bufferedReader!=null) {
-        		try {
-					bufferedReader.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-        	}
+            LogUtil.writeLog(stringBuffer.toString());
+            //å…³é—­æµ
+            if(bufferedReader!=null) {
+                try {
+                    bufferedReader.close();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
         }
         return resStr.toString();
     }
 
     /**
-     * Ö´ĞĞÃüÁî£¬²¢Ö±½Ó·µ»ØÊÇ·ñÖ´ĞĞ³É¹¦
+     * æ‰§è¡Œå‘½ä»¤ï¼Œå¹¶ç›´æ¥è¿”å›æ˜¯å¦æ‰§è¡ŒæˆåŠŸ
      * @param shellCommand
      * @return
      */
     public static boolean executeShell(String shellCommand) {
         int success = 0;
-        
-        //ÈÕÖ¾´®
+
+        //æ—¥å¿—ä¸²
         StringBuffer stringBuffer = new StringBuffer();
-        //½ÓÊÜ¿ØÖÆÌ¨Êä³ö
+        //æ¥å—æ§åˆ¶å°è¾“å‡º
         BufferedReader bufferedReader = null;
 
         try {
             Process pid = null;
             String[] cmd = {"/bin/sh", "-c", shellCommand};
-            //Ö´ĞĞShellÃüÁî
+            //æ‰§è¡ŒShellå‘½ä»¤
             pid = Runtime.getRuntime().exec(cmd);
-            stringBuffer.append("Ö´ĞĞÃüÁî:"+shellCommand+"\r\n");
+            stringBuffer.append("æ‰§è¡Œå‘½ä»¤:"+shellCommand+"\r\n");
             if (pid != null) {
-            	stringBuffer.append("½ø³ÌºÅ:"+pid.toString()+"\r\n");
+                stringBuffer.append("è¿›ç¨‹å·:"+pid.toString()+"\r\n");
                 bufferedReader = new BufferedReader(new InputStreamReader(pid.getInputStream()), 1024);
-                //»ñÈ¡Ö´ĞĞ½á¹û
+                //è·å–æ‰§è¡Œç»“æœ
                 success = pid.waitFor();
             } else {
-                stringBuffer.append("Exception:ÃüÁîÎ´Ö´ĞĞ\r\n");
+                stringBuffer.append("Exception:å‘½ä»¤æœªæ‰§è¡Œ\r\n");
                 return false;
             }
-            stringBuffer.append("Ö´ĞĞ½á¹û:\r\n");
+            stringBuffer.append("æ‰§è¡Œç»“æœ:\r\n");
             String line = null;
-            //¶ÁÈ¡ShellµÄÊä³öÄÚÈİ£¬²¢Ìí¼Óµ½stringBufferÖĞ
+            //è¯»å–Shellçš„è¾“å‡ºå†…å®¹ï¼Œå¹¶æ·»åŠ åˆ°stringBufferä¸­
             while (bufferedReader != null && (line = bufferedReader.readLine()) != null) {
                 stringBuffer.append(line).append("\r\n");
             }
         } catch (Exception ioe) {
-        	stringBuffer.append("ÃüÁîÖ´ĞĞÊ±·¢ÉúÒì³£:");
-        	stringBuffer.append("Òì³£ĞÅÏ¢:"+ioe.getMessage());
-        	return false;
+            stringBuffer.append("å‘½ä»¤æ‰§è¡Œæ—¶å‘ç”Ÿå¼‚å¸¸:");
+            stringBuffer.append("å¼‚å¸¸ä¿¡æ¯:"+ioe.getMessage());
+            return false;
         } finally {
-        	LogUtil.writeLog(stringBuffer.toString());
-        	//¹Ø±ÕÁ÷
-        	if(bufferedReader!=null) {
-        		try {
-					bufferedReader.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-        	}
+            LogUtil.writeLog(stringBuffer.toString());
+            //å…³é—­æµ
+            if(bufferedReader!=null) {
+                try {
+                    bufferedReader.close();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
         }
         if(success==0) return true;
         else return false;
     }
-}  
+}

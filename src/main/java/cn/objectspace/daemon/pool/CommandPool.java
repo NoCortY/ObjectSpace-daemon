@@ -1,10 +1,10 @@
 package cn.objectspace.daemon.pool;
 
 /**
- *     ½ÓÊÜÃüÁî³£Á¿³Ø
+ *     æ¥å—å‘½ä»¤å¸¸é‡æ± 
  * @author nocor
  *
  */
 public class CommandPool {
-	public static final String CLOSE_MICROSERVICE = "3001";
+    public static final String CLOSE_MICROSERVICE = "3001";
 }

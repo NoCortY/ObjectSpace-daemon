@@ -1,55 +1,55 @@
 package cn.objectspace.daemon.util;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * ¼ÇÂ¼ÈÕÖ¾µÄ¹¤¾ß
+ * è®°å½•æ—¥å¿—çš„å·¥å…·
  * @author nocor
  *
  */
 public class LogUtil {
-	//ÈÕÖ¾Â·¾¶
-	private static final String basePath = "./cloud_daemon_logs";
-	//¼ÇÂ¼shellÖ´ĞĞ×´¿öµÄÈÕÖ¾ÎÄ¼şµÄÎ»ÖÃ
-	private static final String executeShellLogFile = basePath+"excuteShell.log";
-	public static synchronized void writeLog(String logContent) {
-		makeDirPath(executeShellLogFile);
-		OutputStream outStream = null;
-		OutputStreamWriter outputStreamWriter = null;
-		//µ±Ç°Ê±¼ä
-		DateFormat date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		try {
-			//×·¼ÓĞ´Ä£Ê½
-			outStream = new FileOutputStream(executeShellLogFile,true);
-			outputStreamWriter = new OutputStreamWriter(outStream,"UTF-8");
-			outputStreamWriter.write(date.format(new Date())+" "+logContent+"\r\n");
-		} catch (Exception e) {
-			System.out.println("Òì³£");
-			System.out.println("Òì³£ĞÅÏ¢:"+e.getMessage());
-		}finally {
-			try {
-				outStream.close();
-				outputStreamWriter.flush();
-				outputStreamWriter.close();
-			} catch (IOException e) {
-				System.out.println("¹Ø±ÕÁ÷Òì³£");
-				System.out.println("Òì³£ĞÅÏ¢:"+e.getMessage());
-			}
-		}
-	}
-	
-	private static void makeDirPath(String targetAddr) {
-		// TODO Auto-generated method stub
-		File dirPath = new File(targetAddr);
-		if(!dirPath.exists()) {
-			dirPath.mkdirs();
-		}
-	}
+    //æ—¥å¿—è·¯å¾„
+    private static final String basePath = "./cloud_daemon_logs";
+    //è®°å½•shellæ‰§è¡ŒçŠ¶å†µçš„æ—¥å¿—æ–‡ä»¶çš„ä½ç½®
+    private static final String executeShellLogFile = basePath+"excuteShell.log";
+    public static synchronized void writeLog(String logContent) {
+        makeDirPath(executeShellLogFile);
+        OutputStream outStream = null;
+        OutputStreamWriter outputStreamWriter = null;
+        //å½“å‰æ—¶é—´
+        DateFormat date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            //è¿½åŠ å†™æ¨¡å¼
+            outStream = new FileOutputStream(executeShellLogFile,true);
+            outputStreamWriter = new OutputStreamWriter(outStream,"UTF-8");
+            outputStreamWriter.write(date.format(new Date())+" "+logContent+"\r\n");
+        } catch (Exception e) {
+            System.out.println("å¼‚å¸¸");
+            System.out.println("å¼‚å¸¸ä¿¡æ¯:"+e.getMessage());
+        }finally {
+            try {
+                if(outStream!=null){
+                    outStream.close();
+                }
+                if(outputStreamWriter!=null){
+                    outputStreamWriter.close();
+                    outputStreamWriter.flush();
+                }
+            } catch (IOException e) {
+                System.out.println("å…³é—­æµå¼‚å¸¸");
+                System.out.println("å¼‚å¸¸ä¿¡æ¯:"+e.getMessage());
+            }
+        }
+    }
+
+    private static void makeDirPath(String targetAddr) {
+        // TODO Auto-generated method stub
+        File dirPath = new File(targetAddr);
+        if(!dirPath.exists()) {
+            dirPath.mkdirs();
+        }
+    }
 }

@@ -1,9 +1,9 @@
 package cn.objectspace.daemon.util;
 
-import java.io.*;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.*;
 
 public class FileUtil {
 	private static Logger logger = LoggerFactory.getLogger(FileUtil.class);
@@ -29,9 +29,12 @@ public class FileUtil {
                 if(bis!=null) bis.close();
                 if(bos!=null) bos.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("关闭流异常");
+                logger.error("异常信息:{}",e.getMessage());
+                return false;
             }
         }
+        logger.info(destFilePath+"复制成功");
         return true;
     }
 }

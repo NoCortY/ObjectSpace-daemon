@@ -83,7 +83,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<mainClass>com.asiainfo.sdhsp.ApplicationStarter</mainClass>
+					<mainClass>cn.objectspace.daemon.util.ServerUtil</mainClass>
 				</configuration>
 				<executions>
 					<execution>
