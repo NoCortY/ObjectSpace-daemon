@@ -12,7 +12,7 @@ public class DiskDto implements Serializable {
     //盘符名称
     private String diskName;
     //盘符类型
-    private String disType;
+    private String diskType;
     //总大小
     private Long total;
     //剩余大小
@@ -24,8 +24,8 @@ public class DiskDto implements Serializable {
     //使用率
     private Double usePercent;
     //读写
-    private Long read;
-    private Long write;
+    private Long readDisk;
+    private Long writeDisk;
 
     public String getDiskName() {
         return diskName;
@@ -35,12 +35,12 @@ public class DiskDto implements Serializable {
         this.diskName = diskName;
     }
 
-    public String getDisType() {
-        return disType;
+    public String getDiskType() {
+        return diskType;
     }
 
-    public void setDisType(String disType) {
-        this.disType = disType;
+    public void setDiskType(String diskType) {
+        this.diskType = diskType;
     }
 
     public Long getTotal() {
@@ -83,34 +83,34 @@ public class DiskDto implements Serializable {
         this.usePercent = usePercent;
     }
 
-    public Long getRead() {
-        return read;
+    public Long getReadDisk() {
+        return readDisk;
     }
 
-    public void setRead(Long read) {
-        this.read = read;
+    public void setReadDisk(Long readDisk) {
+        this.readDisk = readDisk;
     }
 
-    public Long getWrite() {
-        return write;
+    public Long getWriteDisk() {
+        return writeDisk;
     }
 
-    public void setWrite(Long write) {
-        this.write = write;
+    public void setWriteDisk(Long writeDisk) {
+        this.writeDisk = writeDisk;
     }
 
     @Override
     public String toString() {
         return "DiskDto{" +
                 "diskName='" + diskName + '\'' +
-                ", disType='" + disType + '\'' +
+                ", diskType='" + diskType + '\'' +
                 ", total=" + total +
                 ", free=" + free +
                 ", avail=" + avail +
                 ", used=" + used +
                 ", usePercent=" + usePercent +
-                ", read=" + read +
-                ", write=" + write +
+                ", readDisk=" + readDisk +
+                ", writeDisk=" + writeDisk +
                 '}';
     }
 }

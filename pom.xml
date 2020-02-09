@@ -83,7 +83,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<mainClass>cn.objectspace.daemon.util.ServerUtil</mainClass>
+					<mainClass>cn.objectspace.daemon.DaemonCore</mainClass>
 				</configuration>
 				<executions>
 					<execution>

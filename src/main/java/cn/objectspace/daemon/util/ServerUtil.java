@@ -63,12 +63,15 @@ public class ServerUtil {
                 classPath = "C:\\Users\\NoCortY\\Downloads\\hyperic-sigar-1.6.4\\hyperic-sigar-1.6.4\\sigar-bin\\";
             //windows依赖的第一个dll
             InputStream inStream = ServerUtil.class.getResourceAsStream("/sigar/sigar-amd64-winnt.dll");
+            System.out.println(inStream);
             FileUtil.copyFile(inStream,classPath+"sigar-amd64-winnt.dll");
             //windows依赖的第二个dll
             inStream = ServerUtil.class.getResourceAsStream("/sigar/sigar-x86-winnt.dll");
+            System.out.println(inStream);
             FileUtil.copyFile(inStream,classPath+"sigar-x86-winnt.dll");
             //windows依赖的第三个dll
             inStream = ServerUtil.class.getResourceAsStream("/sigar/sigar-x86-winnt.lib");
+            System.out.println(inStream);
             FileUtil.copyFile(inStream,classPath+"sigar-x86-winnt.lib");
         }else{
             logger.info("当前环境为linux");
@@ -205,14 +208,14 @@ public class ServerUtil {
             if(usage.getTotal()==0L) continue;
             // 分区的盘符名称
             disk.setDiskName(fs.getDevName());
-            disk.setDisType(fs.getSysTypeName());
+            disk.setDiskType(fs.getSysTypeName());
             disk.setTotal(usage.getTotal());
             disk.setFree(usage.getFree());
             disk.setAvail(usage.getAvail());
             disk.setUsed(usage.getUsed());
             disk.setUsePercent(usage.getUsePercent() * 100D);
-            disk.setRead(usage.getDiskReads());
-            disk.setWrite(usage.getDiskWrites());
+            disk.setReadDisk(usage.getDiskReads());
+            disk.setWriteDisk(usage.getDiskWrites());
             logger.info("盘符名称:{}", fs.getDevName());
             logger.info("盘符路径:{}", fs.getDirName());
             logger.info("盘符类型:{}", fs.getSysTypeName());

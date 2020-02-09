@@ -11,6 +11,8 @@ import java.util.List;
 public class ServerInfoDto implements Serializable {
     private static final long serialVersionUID = 7277973986550822660L;
     /*服务器基本信息*/
+    //服务器对应的用户id
+    private Integer serverUser;
     //主机名
     private String computerName;
     //域名
@@ -53,6 +55,13 @@ public class ServerInfoDto implements Serializable {
     //NetDto
     List<NetDto> netList;
 
+    public Integer getServerUser() {
+        return serverUser;
+    }
+
+    public void setServerUser(Integer serverUser) {
+        this.serverUser = serverUser;
+    }
     public Double getMemUsedPercent() {
         return memUsedPercent;
     }

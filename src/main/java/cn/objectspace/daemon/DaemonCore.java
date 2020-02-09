@@ -3,6 +3,7 @@ package cn.objectspace.daemon;
 import cn.objectspace.daemon.pojo.dto.ReqDto;
 import cn.objectspace.daemon.pojo.dto.ResDto;
 import cn.objectspace.daemon.pojo.singletonbean.GsonSingleton;
+import cn.objectspace.daemon.util.FileUtil;
 import cn.objectspace.daemon.util.ServerUtil;
 import com.google.gson.Gson;
 import io.vertx.core.AbstractVerticle;
@@ -15,9 +16,14 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
 
+import java.io.File;
+import java.io.IOException;
+
 //守护进程接收器
 public class DaemonCore extends AbstractVerticle {
     public static void main(String[] args) {
+        //初始化服务
+        init(args[0]);
         // 创建服务
         DaemonCore verticle = new DaemonCore();
         Vertx vertx = Vertx.vertx();
@@ -25,6 +31,37 @@ public class DaemonCore extends AbstractVerticle {
         vertx.deployVerticle(verticle);
     }
 
+    private static void init(String arg) {
+        //获取操作系统信息
+        String OS = System.getProperty("os.name").toLowerCase();
+        File file = null;
+        if(OS.contains("win")){
+            file = new File("C:\\Users\\NoCortY\\Downloads\\hyperic-sigar-1.6.4\\hyperic-sigar-1.6.4\\sigar-bin\\ocdae.os");
+            if(!file.exists()){
+                try {
+                    file.createNewFile();
+                    System.out.println("守护线程第一次启动...写入用户id");
+                    FileUtil.writeFileAsString(arg,file.getAbsolutePath());
+                } catch (IOException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        }else{
+            file = new File("/usr/lib64/ocdae.os");
+            if(!file.exists()){
+                try {
+                    file.createNewFile();
+                    System.out.println("守护线程第一次启动...写入用户id");
+                    FileUtil.writeFileAsString(arg,file.getAbsolutePath());
+                } catch (IOException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        }
+    }
+    public static void heartBeat(){
+
+    }
     @Override
     public void start() throws Exception {
 
