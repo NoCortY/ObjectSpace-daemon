@@ -9,6 +9,8 @@ import java.io.Serializable;
 */
 public class DiskDto implements Serializable {
     private static final long serialVersionUID = -333899734218316019L;
+    private String diskServerIp;
+    private Integer diskServerUser;
     //盘符名称
     private String diskName;
     //盘符类型
@@ -26,6 +28,22 @@ public class DiskDto implements Serializable {
     //读写
     private Long readDisk;
     private Long writeDisk;
+
+    public String getDiskServerIp() {
+        return diskServerIp;
+    }
+
+    public void setDiskServerIp(String diskServerIp) {
+        this.diskServerIp = diskServerIp;
+    }
+
+    public Integer getDiskServerUser() {
+        return diskServerUser;
+    }
+
+    public void setDiskServerUser(Integer diskServerUser) {
+        this.diskServerUser = diskServerUser;
+    }
 
     public String getDiskName() {
         return diskName;

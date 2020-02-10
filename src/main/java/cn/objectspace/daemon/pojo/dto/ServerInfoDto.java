@@ -1,6 +1,9 @@
 package cn.objectspace.daemon.pojo.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -55,6 +58,8 @@ public class ServerInfoDto implements Serializable {
     //NetDto
     List<NetDto> netList;
 
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm")
+    Date recordTime;
     public Integer getServerUser() {
         return serverUser;
     }
@@ -204,6 +209,14 @@ public class ServerInfoDto implements Serializable {
 
     public void setNetList(List<NetDto> netList) {
         this.netList = netList;
+    }
+
+    public Date getRecordTime() {
+        return recordTime;
+    }
+
+    public void setRecordTime(Date recordTime) {
+        this.recordTime = recordTime;
     }
 
     @Override

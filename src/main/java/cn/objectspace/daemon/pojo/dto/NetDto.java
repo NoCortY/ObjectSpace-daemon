@@ -8,6 +8,10 @@ import java.io.Serializable;
 */
 public class NetDto implements Serializable {
     private static final long serialVersionUID = -4795035738569949242L;
+
+    private String netServerIp;
+    private Integer netServerUser;
+
     //名
     private String netName;
     //IP
@@ -30,6 +34,22 @@ public class NetDto implements Serializable {
     private Long rxDropped;
     //发送丢包数
     private Long txDropped;
+
+    public String getNetServerIp() {
+        return netServerIp;
+    }
+
+    public void setNetServerIp(String netServerIp) {
+        this.netServerIp = netServerIp;
+    }
+
+    public Integer getNetServerUser() {
+        return netServerUser;
+    }
+
+    public void setNetServerUser(Integer netServerUser) {
+        this.netServerUser = netServerUser;
+    }
 
     public String getNetName() {
         return netName;

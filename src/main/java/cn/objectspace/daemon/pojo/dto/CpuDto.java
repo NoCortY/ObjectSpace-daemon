@@ -9,6 +9,9 @@ import java.io.Serializable;
 */
 public class CpuDto implements Serializable {
     private static final long serialVersionUID = -5686994829523765305L;
+    private Integer cpuId;
+    private String cpuServerIp;
+    private Integer cpuServerUser;
     //频率
     private Integer frequency;
     //生产商
@@ -24,6 +27,30 @@ public class CpuDto implements Serializable {
     //空闲率
     private Double idle;
 
+
+    public Integer getCpuId() {
+        return cpuId;
+    }
+
+    public void setCpuId(Integer cpuId) {
+        this.cpuId = cpuId;
+    }
+
+    public String getCpuServerIp() {
+        return cpuServerIp;
+    }
+
+    public void setCpuServerIp(String cpuServerIp) {
+        this.cpuServerIp = cpuServerIp;
+    }
+
+    public Integer getCpuServerUser() {
+        return cpuServerUser;
+    }
+
+    public void setCpuServerUser(Integer cpuServerUser) {
+        this.cpuServerUser = cpuServerUser;
+    }
 
     public Integer getFrequency() {
         return frequency;
