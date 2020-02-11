@@ -1,6 +1,9 @@
 package cn.objectspace.daemon.pojo.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
+import java.util.Date;
 
 /**
 * @Description: 硬盘信息Dto
@@ -28,6 +31,8 @@ public class DiskDto implements Serializable {
     //读写
     private Long readDisk;
     private Long writeDisk;
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm")
+    private Date recordTime;
 
     public String getDiskServerIp() {
         return diskServerIp;
@@ -117,10 +122,20 @@ public class DiskDto implements Serializable {
         this.writeDisk = writeDisk;
     }
 
+    public Date getRecordTime() {
+        return recordTime;
+    }
+
+    public void setRecordTime(Date recordTime) {
+        this.recordTime = recordTime;
+    }
+
     @Override
     public String toString() {
         return "DiskDto{" +
-                "diskName='" + diskName + '\'' +
+                "diskServerIp='" + diskServerIp + '\'' +
+                ", diskServerUser=" + diskServerUser +
+                ", diskName='" + diskName + '\'' +
                 ", diskType='" + diskType + '\'' +
                 ", total=" + total +
                 ", free=" + free +
@@ -129,6 +144,7 @@ public class DiskDto implements Serializable {
                 ", usePercent=" + usePercent +
                 ", readDisk=" + readDisk +
                 ", writeDisk=" + writeDisk +
+                ", recordTime=" + recordTime +
                 '}';
     }
 }

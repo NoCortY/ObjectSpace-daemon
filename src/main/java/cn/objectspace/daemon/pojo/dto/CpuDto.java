@@ -1,6 +1,9 @@
 package cn.objectspace.daemon.pojo.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
+import java.util.Date;
 
 /**
 * @Description: Cpu信息
@@ -26,6 +29,8 @@ public class CpuDto implements Serializable {
     private Double combine;
     //空闲率
     private Double idle;
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm")
+    private Date recordTime;
 
 
     public Integer getCpuId() {
@@ -108,16 +113,28 @@ public class CpuDto implements Serializable {
         this.idle = idle;
     }
 
+    public Date getRecordTime() {
+        return recordTime;
+    }
+
+    public void setRecordTime(Date recordTime) {
+        this.recordTime = recordTime;
+    }
+
     @Override
     public String toString() {
         return "CpuDto{" +
-                "frequency=" + frequency +
+                "cpuId=" + cpuId +
+                ", cpuServerIp='" + cpuServerIp + '\'' +
+                ", cpuServerUser=" + cpuServerUser +
+                ", frequency=" + frequency +
                 ", vendor='" + vendor + '\'' +
                 ", model='" + model + '\'' +
                 ", userUsed=" + userUsed +
                 ", systemUsed=" + systemUsed +
                 ", combine=" + combine +
                 ", idle=" + idle +
+                ", recordTime=" + recordTime +
                 '}';
     }
 }

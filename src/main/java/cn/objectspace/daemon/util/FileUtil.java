@@ -14,7 +14,7 @@ public class FileUtil {
             fileReader = new FileReader(destFilePath);
             char[] buf = new char[1024];
             int num = 0;
-            while((num = fileReader.read())!=-1){
+            while((num = fileReader.read(buf))!=-1){
                 sb.append(new String(buf,0,num));
             }
         } catch (IOException e) {

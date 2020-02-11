@@ -1,5 +1,6 @@
 package cn.objectspace.daemon.util;
 
+import cn.objectspace.daemon.cache.DaemonCache;
 import cn.objectspace.daemon.pojo.dto.CpuDto;
 import cn.objectspace.daemon.pojo.dto.DiskDto;
 import cn.objectspace.daemon.pojo.dto.NetDto;
@@ -41,6 +42,9 @@ public class ServerUtil {
             serverInfoDto.setCpuList(cpu());
             serverInfoDto.setDiskList(disk());
             serverInfoDto.setNetList(net());
+            //
+            System.out.println(DaemonCache.getCacheMap().get("userId"));
+            serverInfoDto.setServerUser(Integer.valueOf((String) DaemonCache.getCacheMap().get("userId")));
         } catch (SigarException e) {
             logger.error("获取内存信息异常");
             logger.error("异常信息:{}",e.getMessage());
@@ -250,7 +254,7 @@ public class ServerUtil {
             if("0.0.0.0".equals(ifconfig.getAddress())) continue;
             NetInterfaceStat ifstat = sigar.getNetInterfaceStat(name);
             netDto.setNetName(name);
-            netDto.setIp(ifconfig.getAddress());
+            netDto.setNetIp(ifconfig.getAddress());
             netDto.setNetMask(ifconfig.getNetmask());
             netDto.setRxPackets(ifstat.getRxPackets());
             netDto.setTxPackets(ifstat.getTxPackets());

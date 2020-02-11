@@ -1,5 +1,6 @@
 package cn.objectspace.daemon;
 
+import cn.objectspace.daemon.cache.DaemonCache;
 import cn.objectspace.daemon.pojo.dto.ReqDto;
 import cn.objectspace.daemon.pojo.dto.ResDto;
 import cn.objectspace.daemon.pojo.singletonbean.GsonSingleton;
@@ -10,28 +11,44 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;
 import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerResponse;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
+import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.handler.BodyHandler;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 //守护进程接收器
 public class DaemonCore extends AbstractVerticle {
     public static void main(String[] args) {
         //初始化服务
-        init(args[0]);
+        String[] a = {"3","www.baidu.com"};
+        init(a);
         // 创建服务
         DaemonCore verticle = new DaemonCore();
         Vertx vertx = Vertx.vertx();
+        //心跳发生器
+        heartBeat(vertx);
         // 部署服务，会执行MyHttpServer的start方法
         vertx.deployVerticle(verticle);
     }
 
-    private static void init(String arg) {
+    /**
+     * @Description: 初始化守护进程
+     * @Param: [arg]
+     * @return: void
+     * @Author: NoCortY
+     * @Date: 2020/2/11
+     */
+    private static void init(String[] args) {
         //获取操作系统信息
         String OS = System.getProperty("os.name").toLowerCase();
         File file = null;
@@ -40,27 +57,74 @@ public class DaemonCore extends AbstractVerticle {
             if(!file.exists()){
                 try {
                     file.createNewFile();
-                    System.out.println("守护线程第一次启动...写入用户id");
-                    FileUtil.writeFileAsString(arg,file.getAbsolutePath());
+                    System.out.println("守护线程第一次启动...写入用户id和心跳地址");
+                    //写入缓存
+                    DaemonCache.getCacheMap().put("userId",args[0]);
+                    DaemonCache.getCacheMap().put("pingUrl",args[1]);
+                    //写入文件
+                    FileUtil.writeFileAsString("userId="+args[0]+"\n"+"pingUrl="+args[1],file.getAbsolutePath());
                 } catch (IOException e) {
                     System.out.println(e.getMessage());
                 }
+            }else{
+                //如果文件已经存在，那么直接从文件中读，放入缓存中
+                String initStr = FileUtil.readFileAsString(file.getAbsolutePath());
+                //解析
+                if(initStr!=null){
+                    String[] lineStr = initStr.split("\n");
+                    for(String line:lineStr){
+                        String[] keyValue = line.split("=");
+                        //写入缓存
+                        DaemonCache.getCacheMap().put(keyValue[0],keyValue[1]);
+                    }
+                }else{
+                    System.out.println("文件已损坏");
+                }
+
             }
         }else{
             file = new File("/usr/lib64/ocdae.os");
             if(!file.exists()){
                 try {
                     file.createNewFile();
-                    System.out.println("守护线程第一次启动...写入用户id");
-                    FileUtil.writeFileAsString(arg,file.getAbsolutePath());
+                    System.out.println("守护线程第一次启动...写入用户id和心跳地址");
+                    FileUtil.writeFileAsString("userId="+args[0]+"\n"+"pingUrl="+args[1]+"\n",file.getAbsolutePath());
                 } catch (IOException e) {
                     System.out.println(e.getMessage());
                 }
+            }else{
+                //如果文件已经存在，那么直接从文件中读，放入缓存中
+                String initStr = FileUtil.readFileAsString(file.getAbsolutePath());
+                //解析
+                if(initStr!=null){
+                    String[] lineStr = initStr.split("\n");
+                    for(String line:lineStr){
+                        String[] keyValue = line.split("=");
+                        //写入缓存
+                        DaemonCache.getCacheMap().put(keyValue[0],keyValue[1]);
+                    }
+                }else{
+                    System.out.println("文件已损坏");
+                }
+
             }
         }
     }
-    public static void heartBeat(){
+    public static void heartBeat(Vertx vertx){
 
+        ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(10);
+        scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                String sendHeartBeatUrl = (String) DaemonCache.getCacheMap().get("pingUrl");
+                WebClient webClient = WebClient.create(vertx);
+                System.out.println("发送心跳到:"+sendHeartBeatUrl);
+                webClient.postAbs(sendHeartBeatUrl).sendJson(ServerUtil.serverInfoDtoBuilder(),handle->{
+                    System.out.println("心跳信号已传送");
+                    System.out.println("返回信息:"+handle.result().bodyAsString());
+                });
+            }
+        }, 5, 30, TimeUnit.SECONDS);
     }
     @Override
     public void start() throws Exception {

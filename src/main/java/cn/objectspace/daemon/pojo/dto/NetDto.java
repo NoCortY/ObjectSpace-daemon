@@ -1,6 +1,10 @@
 package cn.objectspace.daemon.pojo.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
+import java.util.Date;
+
 /**
 * @Description: 网卡信息Dto
 * @Author: NoCortY
@@ -15,7 +19,7 @@ public class NetDto implements Serializable {
     //名
     private String netName;
     //IP
-    private String ip;
+    private String netIp;
     //子网掩码
     private String netMask;
     //接包数
@@ -34,6 +38,8 @@ public class NetDto implements Serializable {
     private Long rxDropped;
     //发送丢包数
     private Long txDropped;
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm")
+    private Date recordTime;
 
     public String getNetServerIp() {
         return netServerIp;
@@ -59,12 +65,12 @@ public class NetDto implements Serializable {
         this.netName = netName;
     }
 
-    public String getIp() {
-        return ip;
+    public String getNetIp() {
+        return netIp;
     }
 
-    public void setIp(String ip) {
-        this.ip = ip;
+    public void setNetIp(String netIp) {
+        this.netIp = netIp;
     }
 
     public String getNetMask() {
@@ -139,11 +145,22 @@ public class NetDto implements Serializable {
         this.txDropped = txDropped;
     }
 
+    public Date getRecordTime() {
+        return recordTime;
+    }
+
+    public void setRecordTime(Date recordTime) {
+        this.recordTime = recordTime;
+    }
+
+
     @Override
     public String toString() {
         return "NetDto{" +
-                "netName='" + netName + '\'' +
-                ", ip='" + ip + '\'' +
+                "netServerIp='" + netServerIp + '\'' +
+                ", netServerUser=" + netServerUser +
+                ", netName='" + netName + '\'' +
+                ", netIp='" + netIp + '\'' +
                 ", netMask='" + netMask + '\'' +
                 ", rxPackets=" + rxPackets +
                 ", txPackets=" + txPackets +
@@ -153,6 +170,7 @@ public class NetDto implements Serializable {
                 ", txErrors=" + txErrors +
                 ", rxDropped=" + rxDropped +
                 ", txDropped=" + txDropped +
+                ", recordTime=" + recordTime +
                 '}';
     }
 }

@@ -50,37 +50,23 @@ public class ServerInfoDto implements Serializable {
     private Double swapUsedPercent;
 
     //CPU
-    List<CpuDto> cpuList;
+    private List<CpuDto> cpuList;
 
     //Disk
-    List<DiskDto> diskList;
+    private List<DiskDto> diskList;
 
     //NetDto
-    List<NetDto> netList;
+    private List<NetDto> netList;
 
     @JsonFormat(pattern = "yyyy-MM-dd hh:mm")
-    Date recordTime;
+    private Date recordTime;
+
     public Integer getServerUser() {
         return serverUser;
     }
 
     public void setServerUser(Integer serverUser) {
         this.serverUser = serverUser;
-    }
-    public Double getMemUsedPercent() {
-        return memUsedPercent;
-    }
-
-    public void setMemUsedPercent(Double memUsedPercent) {
-        this.memUsedPercent = memUsedPercent;
-    }
-
-    public Double getSwapUsedPercent() {
-        return swapUsedPercent;
-    }
-
-    public void setSwapUsedPercent(Double swapUsedPercent) {
-        this.swapUsedPercent = swapUsedPercent;
     }
 
     public String getComputerName() {
@@ -163,6 +149,14 @@ public class ServerInfoDto implements Serializable {
         this.memFree = memFree;
     }
 
+    public Double getMemUsedPercent() {
+        return memUsedPercent;
+    }
+
+    public void setMemUsedPercent(Double memUsedPercent) {
+        this.memUsedPercent = memUsedPercent;
+    }
+
     public Long getSwapTotal() {
         return swapTotal;
     }
@@ -185,6 +179,14 @@ public class ServerInfoDto implements Serializable {
 
     public void setSwapFree(Long swapFree) {
         this.swapFree = swapFree;
+    }
+
+    public Double getSwapUsedPercent() {
+        return swapUsedPercent;
+    }
+
+    public void setSwapUsedPercent(Double swapUsedPercent) {
+        this.swapUsedPercent = swapUsedPercent;
     }
 
     public List<CpuDto> getCpuList() {
@@ -222,7 +224,8 @@ public class ServerInfoDto implements Serializable {
     @Override
     public String toString() {
         return "ServerInfoDto{" +
-                "computerName='" + computerName + '\'' +
+                "serverUser=" + serverUser +
+                ", computerName='" + computerName + '\'' +
                 ", userDomain='" + userDomain + '\'' +
                 ", ip='" + ip + '\'' +
                 ", hostName='" + hostName + '\'' +
@@ -232,12 +235,15 @@ public class ServerInfoDto implements Serializable {
                 ", memTotal=" + memTotal +
                 ", memUsed=" + memUsed +
                 ", memFree=" + memFree +
+                ", memUsedPercent=" + memUsedPercent +
                 ", swapTotal=" + swapTotal +
                 ", swapUsed=" + swapUsed +
                 ", swapFree=" + swapFree +
+                ", swapUsedPercent=" + swapUsedPercent +
                 ", cpuList=" + cpuList +
                 ", diskList=" + diskList +
                 ", netList=" + netList +
+                ", recordTime=" + recordTime +
                 '}';
     }
 }
