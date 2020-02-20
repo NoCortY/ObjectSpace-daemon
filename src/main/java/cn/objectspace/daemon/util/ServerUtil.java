@@ -42,11 +42,9 @@ public class ServerUtil {
             serverInfoDto.setCpuList(cpu());
             serverInfoDto.setDiskList(disk());
             serverInfoDto.setNetList(net());
-            //
-            System.out.println(DaemonCache.getCacheMap().get("userId"));
             serverInfoDto.setServerUser(Integer.valueOf((String) DaemonCache.getCacheMap().get("userId")));
         } catch (SigarException e) {
-            logger.error("获取内存信息异常");
+            logger.error("获取内存信息出现异常");
             logger.error("异常信息:{}",e.getMessage());
         }
 
@@ -101,6 +99,8 @@ public class ServerUtil {
             }
             System.setProperty("java.library.path", path);
         }
+        //初始化完毕。
+        isInit = true;
         return new Sigar();
     }
 
