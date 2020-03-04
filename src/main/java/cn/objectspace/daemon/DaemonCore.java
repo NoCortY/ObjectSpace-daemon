@@ -113,11 +113,11 @@ public class DaemonCore extends AbstractVerticle {
     public static void heartBeat(Vertx vertx){
 
         ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(10);
+        String sendHeartBeatUrl = (String) DaemonCache.getCacheMap().get("pingUrl");
+        WebClient webClient = WebClient.create(vertx);
         scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                String sendHeartBeatUrl = (String) DaemonCache.getCacheMap().get("pingUrl");
-                WebClient webClient = WebClient.create(vertx);
                 System.out.println("发送心跳到:"+sendHeartBeatUrl);
                 webClient.postAbs(sendHeartBeatUrl).sendJson(ServerUtil.serverInfoDtoBuilder(),handle->{
                     System.out.println("心跳信号已传送");
