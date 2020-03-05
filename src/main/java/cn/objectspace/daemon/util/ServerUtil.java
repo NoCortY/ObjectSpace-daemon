@@ -5,6 +5,7 @@ import cn.objectspace.daemon.pojo.dto.CpuDto;
 import cn.objectspace.daemon.pojo.dto.DiskDto;
 import cn.objectspace.daemon.pojo.dto.NetDto;
 import cn.objectspace.daemon.pojo.dto.ServerInfoDto;
+import cn.objectspace.daemon.pool.ConstantPool;
 import org.hyperic.sigar.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -218,8 +219,28 @@ public class ServerUtil {
             disk.setAvail(usage.getAvail());
             disk.setUsed(usage.getUsed());
             disk.setUsePercent(usage.getUsePercent() * 100D);
-            disk.setReadDisk(usage.getDiskReads());
-            disk.setWriteDisk(usage.getDiskWrites());
+            //获取读写信息时，先去缓存中拿上次的信息，然后计算出一个读写速率，再发送
+            //如果获取不到上次的，说明程序挂过，或者是第一次启动，那么读设置为0.
+            Long lastReadCount = DaemonCache.getRwCache().get(ConstantPool.LAST_READ_COUNT_KEY+disk.getDiskName());
+            Double readRate = 0.0;
+            if(lastReadCount==null) disk.setReadRate(readRate);
+            else {
+                readRate = getDiskRWRate(lastReadCount, usage.getDiskReadBytes(), ConstantPool.HEART_BEAT_SEC);
+                disk.setReadRate(readRate);
+            }
+            //如果获取不到上次的，说明程序挂过，或者是第一次启动，那么写设置为0.
+            Long lastWriteCount = DaemonCache.getRwCache().get(ConstantPool.LAST_WRITE_COUNT_KEY+disk.getDiskName());
+            Double writeRate = 0.0;
+            if(lastWriteCount==null) disk.setWriteRate(writeRate);
+            else {
+                writeRate = getDiskRWRate(lastWriteCount, usage.getDiskWriteBytes(), ConstantPool.HEART_BEAT_SEC);
+                disk.setWriteRate(writeRate);
+            }
+            //读写信息写入缓存
+            DaemonCache.getRwCache().put(ConstantPool.LAST_WRITE_COUNT_KEY+disk.getDiskName(),usage.getDiskWriteBytes());
+            DaemonCache.getRwCache().put(ConstantPool.LAST_READ_COUNT_KEY+disk.getDiskName(),usage.getDiskReadBytes());
+            disk.setReadDisk(usage.getDiskReadBytes());
+            disk.setWriteDisk(usage.getDiskWriteBytes());
             logger.info("盘符名称:{}", fs.getDevName());
             logger.info("盘符路径:{}", fs.getDirName());
             logger.info("盘符类型:{}", fs.getSysTypeName());
@@ -228,8 +249,10 @@ public class ServerUtil {
             logger.info("可用大小(KB):{}", usage.getAvail());
             logger.info("已经使用量(KB):{}", usage.getUsed());
             logger.info("使用率:{}", usage.getUsePercent() * 100D);
-            logger.info("当前Read:{}", usage.getDiskReads());
-            logger.info("当前Write:{}\n", usage.getDiskWrites());
+            logger.info("当前Read:{}", usage.getDiskReadBytes());
+            logger.info("当前Write:{}", usage.getDiskWriteBytes());
+            logger.info("当前ReadRate(B/s):{}",readRate);
+            logger.info("当前WriteRate(B/s):{}",writeRate);
             diskList.add(disk);
         }
         return diskList;
@@ -302,5 +325,18 @@ public class ServerUtil {
         ServerInfoDto serverInfoDto = ServerUtil.serverInfoDtoBuilder();
         System.out.println(serverInfoDto);
     }*/
+    /**
+     * @Description: 获取硬盘读写速率
+     * @Param: [last, current, second]
+     * @return: java.lang.Double
+     * @Author: NoCortY
+     * @Date: 2020/3/5
+     */
+   public static Double getDiskRWRate(long last,long current,int second){
+       Double lastCount = (double) last;
+       Double currentCount = (double) current;
+       //单位：Byte
+       return (currentCount-lastCount)/second;
+   }
 }
 

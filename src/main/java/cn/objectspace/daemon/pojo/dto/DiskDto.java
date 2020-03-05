@@ -31,7 +31,10 @@ public class DiskDto implements Serializable {
     //读写
     private Long readDisk;
     private Long writeDisk;
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm")
+    //读写速率
+    private Double readRate;
+    private Double writeRate;
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm",timezone = "GMT+8")
     private Date recordTime;
 
     public String getDiskServerIp() {
@@ -128,6 +131,22 @@ public class DiskDto implements Serializable {
 
     public void setRecordTime(Date recordTime) {
         this.recordTime = recordTime;
+    }
+
+    public Double getReadRate() {
+        return readRate;
+    }
+
+    public void setReadRate(Double readRate) {
+        this.readRate = readRate;
+    }
+
+    public Double getWriteRate() {
+        return writeRate;
+    }
+
+    public void setWriteRate(Double writeRate) {
+        this.writeRate = writeRate;
     }
 
     @Override

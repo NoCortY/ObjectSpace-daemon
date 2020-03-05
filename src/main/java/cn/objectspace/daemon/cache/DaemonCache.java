@@ -4,8 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DaemonCache {
-	public static Map<String,Object> cacheMap;
-	public static Map<String,Object> microServiceCache;
+	private static Map<String,Object> cacheMap;
+	private static Map<String,Object> microServiceCache;
+	private static Map<String,Long> rwCache;
 	private DaemonCache() {}
 	public static Map<String,Object> getCacheMap() {
 		if(cacheMap==null) {
@@ -27,4 +28,16 @@ public class DaemonCache {
 		}
 		return microServiceCache;
 	}
+
+	public static Map<String, Long> getRwCache() {
+		if(rwCache==null){
+			synchronized (DaemonCache.class){
+				if(rwCache==null){
+					rwCache = new HashMap<>();
+				}
+			}
+		}
+		return rwCache;
+	}
+
 }

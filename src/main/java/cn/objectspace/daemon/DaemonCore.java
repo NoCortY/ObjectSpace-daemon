@@ -4,6 +4,7 @@ import cn.objectspace.daemon.cache.DaemonCache;
 import cn.objectspace.daemon.pojo.dto.ReqDto;
 import cn.objectspace.daemon.pojo.dto.ResDto;
 import cn.objectspace.daemon.pojo.singletonbean.GsonSingleton;
+import cn.objectspace.daemon.pool.ConstantPool;
 import cn.objectspace.daemon.util.FileUtil;
 import cn.objectspace.daemon.util.ServerUtil;
 import com.google.gson.Gson;
@@ -124,7 +125,7 @@ public class DaemonCore extends AbstractVerticle {
                     System.out.println("返回信息:"+handle.result().bodyAsString());
                 });
             }
-        }, 5, 30, TimeUnit.SECONDS);
+        }, 5, ConstantPool.HEART_BEAT_SEC, TimeUnit.SECONDS);
     }
     @Override
     public void start() throws Exception {
