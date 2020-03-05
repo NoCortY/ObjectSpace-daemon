@@ -225,7 +225,7 @@ public class ServerUtil {
             Double readRate = 0.0;
             if(lastReadCount==null) disk.setReadRate(readRate);
             else {
-                readRate = getDiskRWRate(lastReadCount, usage.getDiskReadBytes(), ConstantPool.HEART_BEAT_SEC);
+                readRate = getDiskRWRate(lastReadCount, usage.getDiskReads(), ConstantPool.HEART_BEAT_SEC);
                 disk.setReadRate(readRate);
             }
             //如果获取不到上次的，说明程序挂过，或者是第一次启动，那么写设置为0.
@@ -233,14 +233,14 @@ public class ServerUtil {
             Double writeRate = 0.0;
             if(lastWriteCount==null) disk.setWriteRate(writeRate);
             else {
-                writeRate = getDiskRWRate(lastWriteCount, usage.getDiskWriteBytes(), ConstantPool.HEART_BEAT_SEC);
+                writeRate = getDiskRWRate(lastWriteCount, usage.getDiskWrites(), ConstantPool.HEART_BEAT_SEC);
                 disk.setWriteRate(writeRate);
             }
             //读写信息写入缓存
-            DaemonCache.getRwCache().put(ConstantPool.LAST_WRITE_COUNT_KEY+disk.getDiskName(),usage.getDiskWriteBytes());
-            DaemonCache.getRwCache().put(ConstantPool.LAST_READ_COUNT_KEY+disk.getDiskName(),usage.getDiskReadBytes());
-            disk.setReadDisk(usage.getDiskReadBytes());
-            disk.setWriteDisk(usage.getDiskWriteBytes());
+            DaemonCache.getRwCache().put(ConstantPool.LAST_WRITE_COUNT_KEY+disk.getDiskName(),usage.getDiskWrites());
+            DaemonCache.getRwCache().put(ConstantPool.LAST_READ_COUNT_KEY+disk.getDiskName(),usage.getDiskReads());
+            disk.setReadDisk(usage.getDiskReads());
+            disk.setWriteDisk(usage.getDiskWrites());
             logger.info("盘符名称:{}", fs.getDevName());
             logger.info("盘符路径:{}", fs.getDirName());
             logger.info("盘符类型:{}", fs.getSysTypeName());
@@ -249,8 +249,8 @@ public class ServerUtil {
             logger.info("可用大小(KB):{}", usage.getAvail());
             logger.info("已经使用量(KB):{}", usage.getUsed());
             logger.info("使用率:{}", usage.getUsePercent() * 100D);
-            logger.info("当前Read:{}", usage.getDiskReadBytes());
-            logger.info("当前Write:{}", usage.getDiskWriteBytes());
+            logger.info("当前Read:{}", usage.getDiskReads());
+            logger.info("当前Write:{}", usage.getDiskWrites());
             logger.info("当前ReadRate(B/s):{}",readRate);
             logger.info("当前WriteRate(B/s):{}",writeRate);
             diskList.add(disk);
@@ -335,7 +335,7 @@ public class ServerUtil {
    public static Double getDiskRWRate(long last,long current,int second){
        Double lastCount = (double) last;
        Double currentCount = (double) current;
-       //单位：Byte
+       //单位：MB
        return (currentCount-lastCount)/second;
    }
 }
