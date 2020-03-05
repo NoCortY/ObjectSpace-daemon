@@ -20,4 +20,18 @@ public class ConstantPool {
      * 心跳时间
      */
     public static final Integer HEART_BEAT_SEC = 30;
+
+    /**
+     * 用户id key
+     */
+    public static final String USER_ID = "userId";
+
+    /**
+     * windows环境下套件安装默认位置
+     */
+    public static final String WINDOWS_INSTALL_PATH="C:\\Users\\NoCortY\\Downloads\\hyperic-sigar-1.6.4\\hyperic-sigar-1.6.4\\sigar-bin\\";
+    /**
+     * Linux环境下套件安装默认位置
+     */
+    public static final String LINUX_INSTALL_PATH = "/usr/lib64/";
 }

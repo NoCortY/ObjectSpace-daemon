@@ -5,85 +5,101 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 
+/**
+ * @Description: 文件工具类
+ * @Author: NoCortY
+ * @Date: 2020/3/5
+ */
 public class FileUtil {
-	private static Logger logger = LoggerFactory.getLogger(FileUtil.class);
-	public static String readFileAsString(String destFilePath){
-	    StringBuilder sb = new StringBuilder();
-	    FileReader fileReader = null;
-        try {
-            fileReader = new FileReader(destFilePath);
-            char[] buf = new char[1024];
-            int num = 0;
-            while((num = fileReader.read(buf))!=-1){
-                sb.append(new String(buf,0,num));
-            }
-        } catch (IOException e) {
-            logger.error("读取文件异常");
-            logger.error("异常信息:{}",e.getMessage());
-            return null;
-        }finally {
-            if(fileReader!=null){
-                try {
-                    fileReader.close();
-                } catch (IOException e) {
-                    logger.error("字符流关闭异常");
-                    logger.error("异常信息:{}",e.getMessage());
-                }
-            }
+    private static Logger logger = LoggerFactory.getLogger(FileUtil.class);
+    /**
+     * @Description: 从文件中读入二进制数据
+     * @Param: [filePath]
+     * @return: java.lang.Object
+     * @Author: NoCortY
+     * @Date: 2020/3/6
+     */
+    public static Object readFileAsBinary(String filePath) throws IOException, ClassNotFoundException {
+
+        ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(filePath));
+
+        return objectInputStream.readObject();
+
+    }
+    /**
+     * @Description: 将任意格式内容输出到文件
+     * @Param: [object, destFilePath]
+     * @return: void
+     * @Author: NoCortY
+     * @Date: 2020/3/6
+     */
+    public static void writeFileAsBinary(Object object,String destFilePath) throws IOException {
+        if(object==null) return;
+
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(destFilePath));
+
+        objectOutputStream.writeObject(object);
+
+        objectOutputStream.flush();
+
+        objectOutputStream.close();
+    }
+    /**
+     * @Description: 将文件内容生成一个字符串（字符流方式）
+     * @Param: [destFilePath]
+     * @return: java.lang.String
+     * @Author: NoCortY
+     * @Date: 2020/3/5
+     */
+    public static String readFileAsString(String destFilePath) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        FileReader fileReader = new FileReader(destFilePath);
+        char[] buf = new char[1024];
+        int num = 0;
+        while ((num = fileReader.read(buf)) != -1) {
+            sb.append(new String(buf, 0, num));
         }
+
+        fileReader.close();
+
         return sb.toString();
     }
-	public static boolean writeFileAsString(String content,String destFilePath) {
-        FileWriter fileWriter = null;
-        try {
-             fileWriter = new FileWriter(destFilePath);
-             fileWriter.write(content);
-        } catch (IOException e) {
-            logger.error("文件写入异常");
-            logger.error("异常信息:{}",e.getMessage());
-            return false;
-        }finally {
-            if(fileWriter!=null){
-                try {
-                    fileWriter.close();
-                } catch (IOException e) {
-                    logger.error("字符流关闭异常");
-                    logger.error("异常信息:{}",e.getMessage());
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-    public static boolean copyFile(InputStream inStream, String destFilePath){
-        File destFile = new File(destFilePath);
 
-        BufferedOutputStream bos = null;
-        BufferedInputStream bis = null;
-        try {
-            bis = new BufferedInputStream(inStream);
-            bos = new BufferedOutputStream(new FileOutputStream(destFile));
-            int len = 0;
-            byte[] buffer = new byte[65536];
-            while((len = bis.read(buffer)) != -1){
-                bos.write(buffer, 0, len);
-                bos.flush();
-            }
-        } catch (IOException e) {
-            logger.error("复制dll库异常");
-            logger.error("异常信息:{}",e.getMessage());
-            return false;
-        }finally {
-            try {
-                if(bis!=null) bis.close();
-                if(bos!=null) bos.close();
-            } catch (IOException e) {
-                logger.error("关闭流异常");
-                logger.error("异常信息:{}",e.getMessage());
-                return false;
-            }
+    /**
+     * @Description: 写一段内容到一个文件中（字符流方式）
+     * @Param: [content, destFilePath]
+     * @return: boolean
+     * @Author: NoCortY
+     * @Date: 2020/3/5
+     */
+    public static void writeFileAsString(String content, String destFilePath) throws IOException {
+        FileWriter fileWriter = fileWriter = new FileWriter(destFilePath);
+
+        fileWriter.write(content);
+
+        fileWriter.close();
+    }
+
+    /**
+     * @Description: 拷贝文件
+     * @Param: [inStream文件流, destFilePath目标文件路径]
+     * @return: boolean
+     * @Author: NoCortY
+     * @Date: 2020/3/5
+     */
+    public static void copyFile(InputStream inStream, String destFilePath) throws IOException {
+        File destFile = new File(destFilePath);
+        BufferedInputStream bis = new BufferedInputStream(inStream);
+        ;
+        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(destFile));
+        int len = 0;
+        byte[] buffer = new byte[65536];
+        while ((len = bis.read(buffer)) != -1) {
+            bos.write(buffer, 0, len);
+            bos.flush();
         }
-        logger.info(destFilePath+"复制成功");
-        return true;
+
+        bis.close();
+        bos.close();
     }
 }

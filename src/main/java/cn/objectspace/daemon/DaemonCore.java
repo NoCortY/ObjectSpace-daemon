@@ -1,6 +1,7 @@
 package cn.objectspace.daemon;
 
 import cn.objectspace.daemon.cache.DaemonCache;
+import cn.objectspace.daemon.core.ServerCore;
 import cn.objectspace.daemon.pojo.dto.ReqDto;
 import cn.objectspace.daemon.pojo.dto.ResDto;
 import cn.objectspace.daemon.pojo.singletonbean.GsonSingleton;
@@ -30,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 //守护进程接收器
 public class DaemonCore extends AbstractVerticle {
     public static void main(String[] args) {
-        //初始化服务
+        //初始化服务，参数是暂定的
         String[] a = {"3","www.baidu.com"};
         init(a);
         // 创建服务
@@ -50,66 +51,7 @@ public class DaemonCore extends AbstractVerticle {
      * @Date: 2020/2/11
      */
     private static void init(String[] args) {
-        //获取操作系统信息
-        String OS = System.getProperty("os.name").toLowerCase();
-        File file = null;
-        if(OS.contains("win")){
-            file = new File("C:\\Users\\NoCortY\\Downloads\\hyperic-sigar-1.6.4\\hyperic-sigar-1.6.4\\sigar-bin\\ocdae.os");
-            if(!file.exists()){
-                try {
-                    file.createNewFile();
-                    System.out.println("守护线程第一次启动...写入用户id和心跳地址");
-                    //写入缓存
-                    DaemonCache.getCacheMap().put("userId",args[0]);
-                    DaemonCache.getCacheMap().put("pingUrl",args[1]);
-                    //写入文件
-                    FileUtil.writeFileAsString("userId="+args[0]+"\n"+"pingUrl="+args[1],file.getAbsolutePath());
-                } catch (IOException e) {
-                    System.out.println(e.getMessage());
-                }
-            }else{
-                //如果文件已经存在，那么直接从文件中读，放入缓存中
-                String initStr = FileUtil.readFileAsString(file.getAbsolutePath());
-                //解析
-                if(initStr!=null){
-                    String[] lineStr = initStr.split("\n");
-                    for(String line:lineStr){
-                        String[] keyValue = line.split("=");
-                        //写入缓存
-                        DaemonCache.getCacheMap().put(keyValue[0],keyValue[1]);
-                    }
-                }else{
-                    System.out.println("文件已损坏");
-                }
 
-            }
-        }else{
-            file = new File("/usr/lib64/ocdae.os");
-            if(!file.exists()){
-                try {
-                    file.createNewFile();
-                    System.out.println("守护线程第一次启动...写入用户id和心跳地址");
-                    FileUtil.writeFileAsString("userId="+args[0]+"\n"+"pingUrl="+args[1]+"\n",file.getAbsolutePath());
-                } catch (IOException e) {
-                    System.out.println(e.getMessage());
-                }
-            }else{
-                //如果文件已经存在，那么直接从文件中读，放入缓存中
-                String initStr = FileUtil.readFileAsString(file.getAbsolutePath());
-                //解析
-                if(initStr!=null){
-                    String[] lineStr = initStr.split("\n");
-                    for(String line:lineStr){
-                        String[] keyValue = line.split("=");
-                        //写入缓存
-                        DaemonCache.getCacheMap().put(keyValue[0],keyValue[1]);
-                    }
-                }else{
-                    System.out.println("文件已损坏");
-                }
-
-            }
-        }
     }
     public static void heartBeat(Vertx vertx){
 
@@ -120,7 +62,7 @@ public class DaemonCore extends AbstractVerticle {
             @Override
             public void run() {
                 System.out.println("发送心跳到:"+sendHeartBeatUrl);
-                webClient.postAbs(sendHeartBeatUrl).sendJson(ServerUtil.serverInfoDtoBuilder(),handle->{
+                webClient.postAbs(sendHeartBeatUrl).sendJson(ServerCore.serverInfoDtoBuilder(), handle->{
                     System.out.println("心跳信号已传送");
                     System.out.println("返回信息:"+handle.result().bodyAsString());
                 });
@@ -157,7 +99,7 @@ public class DaemonCore extends AbstractVerticle {
                 switch (command){
                     case "serverInfo": {
                         resDto = new ResDto("1001","请求成功",
-                                ServerUtil.serverInfoDtoBuilder());
+                                ServerCore.serverInfoDtoBuilder());
                         HttpServerResponse response = request.response();
                         MultiMap headers = response.headers();
                         headers.set("content-type", "application/json");
