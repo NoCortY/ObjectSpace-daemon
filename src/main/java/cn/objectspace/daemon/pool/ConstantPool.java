@@ -34,4 +34,9 @@ public class ConstantPool {
      * Linux环境下套件安装默认位置
      */
     public static final String LINUX_INSTALL_PATH = "/usr/lib64/";
+
+    /**
+     * 配置信息缓存 key
+     */
+    public static final String OCDAE_CONFIG = "ocdae_config";
 }

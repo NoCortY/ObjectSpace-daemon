@@ -4,19 +4,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DaemonCache {
-	private static Map<String,Object> cacheMap;
+	private static Map<String,Object> coreMap;
 	private static Map<String,Object> microServiceCache;
 	private static Map<String,Long> rwCache;
 	private DaemonCache() {}
-	public static Map<String,Object> getCacheMap() {
-		if(cacheMap==null) {
+	public static Map<String,Object> getCoreMap() {
+		if(coreMap==null) {
 			synchronized (DaemonCache.class) {
-				if(cacheMap==null) {
-					cacheMap = new HashMap<String,Object>();
+				if(coreMap==null) {
+					coreMap = new HashMap<String,Object>();
 				}
 			}
 		}
-		return cacheMap;
+		return coreMap;
 	}
 	public static Map<String,Object> getMicroServiceCache(){
 		if(microServiceCache==null) {

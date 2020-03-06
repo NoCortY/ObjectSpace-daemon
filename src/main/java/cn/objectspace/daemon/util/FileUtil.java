@@ -23,8 +23,11 @@ public class FileUtil {
 
         ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(filePath));
 
-        return objectInputStream.readObject();
+        Object object =  objectInputStream.readObject();
 
+        objectInputStream.close();
+
+        return object;
     }
     /**
      * @Description: 将任意格式内容输出到文件
