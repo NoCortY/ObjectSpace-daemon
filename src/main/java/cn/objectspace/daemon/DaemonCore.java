@@ -40,7 +40,7 @@ public class DaemonCore extends AbstractVerticle {
     private static Logger logger = LoggerFactory.getLogger(DaemonCore.class);
     public static void main(String[] args) {
         //初始化服务，参数是暂定的
-        String[] a = {"3","www.baidu.com"};
+        String[] a = {"3","http://localhost:7000/ObjectCloud/ComCenter/CC/server/ping"};
         if(daemonInit.init(a)&&serverInit.init(a)){
             // 创建服务
             DaemonCore verticle = new DaemonCore();

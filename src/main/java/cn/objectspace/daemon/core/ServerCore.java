@@ -5,6 +5,7 @@ import cn.objectspace.daemon.pojo.dto.CpuDto;
 import cn.objectspace.daemon.pojo.dto.DiskDto;
 import cn.objectspace.daemon.pojo.dto.NetDto;
 import cn.objectspace.daemon.pojo.dto.ServerInfoDto;
+import cn.objectspace.daemon.pojo.entity.OcdaePO;
 import cn.objectspace.daemon.pool.ConstantPool;
 import org.hyperic.sigar.*;
 import org.slf4j.Logger;
@@ -45,7 +46,8 @@ public class ServerCore {
             serverInfoDto.setCpuList(cpu());
             serverInfoDto.setDiskList(disk());
             serverInfoDto.setNetList(net());
-            serverInfoDto.setServerUser(Integer.valueOf((String) DaemonCache.getCacheMap().get(ConstantPool.USER_ID)));
+            OcdaePO ocdaePO = (OcdaePO) DaemonCache.getCoreMap().get(ConstantPool.OCDAE_CONFIG);
+            serverInfoDto.setServerUser(ocdaePO.getUserId());
         } catch (SigarException e) {
             logger.error("获取服务器组件信息出现异常");
             logger.error("异常信息:{}",e.getMessage());
