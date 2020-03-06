@@ -15,6 +15,14 @@ public class ConstantPool {
      * 上次硬盘写  缓存key
      */
     public static final String LAST_WRITE_COUNT_KEY = "last_write_count:";
+    /**
+     * 上次网卡发送（上传） key
+     */
+    public static final String LAST_TX_BYTE_KEY = "last_tx_byte_key:";
+    /**
+     * 上次网卡接收（下载）key
+     */
+    public static final String LAST_RX_BYTE_KEY = "last_rx_byte_key";
 
     /**
      * 心跳时间

@@ -242,12 +242,30 @@ public class ServerCore {
             netDto.setNetMask(ifconfig.getNetmask());
             netDto.setRxPackets(ifstat.getRxPackets());
             netDto.setTxPackets(ifstat.getTxPackets());
-            netDto.setRxBytes(ifstat.getRxBytes());
-            netDto.setTxBytes(ifstat.getTxBytes());
             netDto.setRxErrors(ifstat.getRxErrors());
             netDto.setTxErrors(ifstat.getTxErrors());
             netDto.setRxDropped(ifstat.getRxDropped());
             netDto.setTxDropped(ifstat.getTxDropped());
+            netDto.setRxBytes(ifstat.getRxBytes());
+            netDto.setTxBytes(ifstat.getTxBytes());
+            //获取最后一次接收字节量
+            Long lastRxBytes = DaemonCache.getRwCache().get(ConstantPool.LAST_RX_BYTE_KEY+name);
+            Double rxRate = 0.0;
+            //如果获取不到说明第一次启动或者服务器down过，那么直接设置为0
+            if(lastRxBytes==null) netDto.setRxRate(rxRate);
+            else{
+                    netDto.setRxRate(getNetTRRate(lastRxBytes,netDto.getRxBytes(),ConstantPool.HEART_BEAT_SEC));
+            }
+            //获取最后一次发送字节数
+            Double txRate = 0.0;
+            Long lastTxBytes = DaemonCache.getRwCache().get(ConstantPool.LAST_TX_BYTE_KEY+name);
+            if(lastTxBytes==null) netDto.setTxRate(txRate);
+            else{
+                netDto.setTxRate(getNetTRRate(lastTxBytes,netDto.getTxBytes(),ConstantPool.HEART_BEAT_SEC));
+            }
+            DaemonCache.getRwCache().put(ConstantPool.LAST_RX_BYTE_KEY+name,ifstat.getRxBytes());
+            DaemonCache.getRwCache().put(ConstantPool.LAST_TX_BYTE_KEY+name,ifstat.getTxBytes());
+
             /*logger.info("网络设备名:{}",name);
             logger.info("IP:{}",ifconfig.getAddress());
             logger.info("子网掩码:{}",ifconfig.getNetmask());
@@ -278,7 +296,20 @@ public class ServerCore {
     private static Double getDiskRWRate(long last, long current, int second){
         Double lastCount = (double) last;
         Double currentCount = (double) current;
-        //单位：MB
+        //单位：MB/s
         return (currentCount-lastCount)/second;
+    }
+    /**
+     * @Description: 获取网速
+     * @Param: [last, current, second]
+     * @return: java.lang.Double
+     * @Author: NoCortY
+     * @Date: 2020/3/6
+     */
+    private static Double getNetTRRate(long last,long current,int second){
+        Double lastCount = (double) last;
+        Double currentCount = (double) current;
+        //单位：KB/s
+        return ((currentCount-lastCount)/1024)/second;
     }
 }
