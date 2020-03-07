@@ -25,6 +25,8 @@ import io.vertx.ext.web.handler.BodyHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -40,7 +42,7 @@ public class DaemonCore extends AbstractVerticle {
     private static Logger logger = LoggerFactory.getLogger(DaemonCore.class);
     public static void main(String[] args) {
         //初始化服务，参数是暂定的
-        String[] a = {"3","http://localhost:7000/ObjectCloud/ComCenter/CC/server/ping"};
+        String[] a = {"3","http://192.168.43.246:7000/ObjectCloud/ComCenter/CC/server/ping"};
         if(daemonInit.init(a)&&serverInit.init(a)){
             // 创建服务
             DaemonCore verticle = new DaemonCore();
@@ -123,7 +125,7 @@ public class DaemonCore extends AbstractVerticle {
             public void run() {
                 System.out.println("发送心跳到:"+ocdaePO.getPingUrl());
                 webClient.postAbs(ocdaePO.getPingUrl()).sendJson(ServerCore.serverInfoDtoBuilder(), handle->{
-                    System.out.println("心跳信号已传送");
+                    System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())+"  心跳信号已传送");
                     System.out.println("返回信息:"+handle.result().bodyAsString());
                 });
             }

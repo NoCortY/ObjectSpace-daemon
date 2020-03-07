@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -47,6 +48,8 @@ public class ServerCore {
             serverInfoDto.setDiskList(disk());
             serverInfoDto.setNetList(net());
             OcdaePO ocdaePO = (OcdaePO) DaemonCache.getCoreMap().get(ConstantPool.OCDAE_CONFIG);
+            //服务器ip根据网卡数据单独设置
+            serverInfoDto.setIp(getRealNetIp(serverInfoDto.getNetList()));
             serverInfoDto.setServerUser(ocdaePO.getUserId());
         } catch (SigarException e) {
             logger.error("获取服务器组件信息出现异常");
@@ -73,7 +76,7 @@ public class ServerCore {
         //获取环境变量
         Map<String,String> map = System.getenv();
 
-        serverInfo.setIp(addr.getHostAddress());
+        //serverInfo.setIp(addr.getHostAddress());//这种ip获取方式有bug，会获取到回环网卡或者非正在使用的网卡。我们需要的是正在使用的网卡
         serverInfo.setComputerName(map.get("COMPUTERNAME"));
         serverInfo.setUserDomain(map.get("USERDOMAIN"));
         serverInfo.setHostName(addr.getHostName());
@@ -311,5 +314,29 @@ public class ServerCore {
         Double currentCount = (double) current;
         //单位：KB/s
         return ((currentCount-lastCount)/1024)/second;
+    }
+
+    private static String getRealNetIp(List<NetDto> netList){
+        Long maxRXPacket = 0L;
+        String realIp = "";
+        while(maxRXPacket.equals(0L)) {
+            //外层循环防止其不联网造成数据获取错误
+            for (NetDto netDto : netList) {
+                if (netDto.getRxPackets() > maxRXPacket) {
+                    maxRXPacket = netDto.getRxPackets();
+                    realIp = netDto.getNetIp();
+                }
+            }
+            if(maxRXPacket.equals(0L)){
+                try {
+                    logger.info("尝试获取真实IP失败，请让您的服务器正常连通管理端网络");
+                    Thread.sleep(1000L);
+                } catch (InterruptedException e) {
+                    logger.error("睡眠Error");
+                    logger.error("异常信息:{}",e.getMessage());
+                }
+            }
+        }
+        return realIp;
     }
 }
