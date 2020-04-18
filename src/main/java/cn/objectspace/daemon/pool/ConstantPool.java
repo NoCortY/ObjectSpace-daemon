@@ -6,6 +6,11 @@ package cn.objectspace.daemon.pool;
 * @Date: 2020/3/5
 */
 public class ConstantPool {
+
+    /**
+     * 心跳发送地址
+     */
+    public static final String HEARTBEAT_SEND_ADDR = "http://192.168.43.246:7000/ObjectCloud/ComCenter/CC/server/ping";
     /**
      * 上次硬盘读  缓存key
      */
@@ -41,7 +46,7 @@ public class ConstantPool {
     /**
      * Linux环境下套件安装默认位置
      */
-    public static final String LINUX_INSTALL_PATH = "/usr/lib64/";
+    public static final String LINUX_INSTALL_PATH = "/usr/local/bin/ObjectSpaceDaemon/";
 
     /**
      * 配置信息缓存 key

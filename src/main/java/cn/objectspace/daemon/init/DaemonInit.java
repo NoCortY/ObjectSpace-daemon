@@ -27,7 +27,7 @@ public class DaemonInit implements ObjectInit {
             //如果文件不存在
             try {
                 file.createNewFile();
-                System.out.println("守护线程第一次启动...写入用户id和心跳地址");
+                System.out.println("守护进程第一次启动...写入用户id和心跳地址");
                 OcdaePO ocdaePO = new OcdaePO();
                 //写入缓存
                 ocdaePO.setUserId(Integer.valueOf(args[0]));

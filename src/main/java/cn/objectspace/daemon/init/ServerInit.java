@@ -102,7 +102,7 @@ public class ServerInit implements ObjectInit, Serializable {
             return false;
         }
         String path = System.getProperty("java.library.path");
-        path += ";" + classPath;
+        path += ":" + classPath;
         System.setProperty("java.library.path", path);
         logger.info("服务器管理套件环境变量:{}",path);
         return true;

@@ -41,9 +41,12 @@ public class DaemonCore extends AbstractVerticle {
     private static ServerInit serverInit = new ServerInit();
     private static Logger logger = LoggerFactory.getLogger(DaemonCore.class);
     public static void main(String[] args) {
-        //初始化服务，参数是暂定的
-        String[] a = {"3","http://192.168.43.246:7000/ObjectCloud/ComCenter/CC/server/ping"};
-        if(daemonInit.init(a)&&serverInit.init(a)){
+        String xarg[] = null;
+        if(args.length>0){
+            xarg = new String[]{args[0], ConstantPool.HEARTBEAT_SEND_ADDR};
+        }
+        //初始化服务
+        if(daemonInit.init(xarg)&&serverInit.init(xarg)){
             // 创建服务
             DaemonCore verticle = new DaemonCore();
             //创建vertx
